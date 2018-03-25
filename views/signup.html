@@ -29,14 +29,51 @@
         <label for="password">密码</label>
         <input type="password" class="form-control" id="password" name="password" placeholder="Password">
       </div>
-      <button type="button" class="btn btn-success btn-block">注册</button>
+      <button type="submit" class="btn btn-success btn-block">注册</button>
     </form>
     <div class="message">
-      <p>已有账号? <a href="/login">点击登录</a>.</p>
+      <p>已有账号?
+        <a href="/login">点击登录</a>.</p>
     </div>
   </div>
   <script src="/node_modules/jquery/dist/jquery.js"></script>
   <script>
+    // 0. 监听表单 submit 提交事件
+    // 0.1 给 submit 按钮绑定 submit 事件
+    $('#signup_form').on('submit', function (e) {
+      // 1.1 阻止表单默认提交事件
+      e.preventDefault()
+      // 1.2 获取表单数据
+      const formData = $('#signup_form').serialize()
+      console.log(formData)
+      // 2. 发送 ajax 异步请求
+      $.ajax({
+        url: '/signup',
+        type: 'post',
+        data: formData,
+        dataType: 'json',
+        success: function (result) {
+          // 3. 测试，等待返回结果
+          console.log(result);
+          // 4. 根据返回结果进行处理 
+          switch (result.code) {
+            case 200:
+              window.location.href = '/';
+              break;
+            case 1:
+              window.alert('邮箱已存在')
+              break;
+            case 2:
+              window.alert('昵称已存在')
+              break;
+            case 500:
+              window.alert('服务器内部错误，请稍后重试')
+              break;
+          }
+        }
+      })
+
+    })
   </script>
 </body>
 
