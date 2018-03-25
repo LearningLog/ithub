@@ -9,6 +9,7 @@ exports.signin = (req,res) => {
 exports.showSignup = (req,res) => {
     res.render('signup.html')
 }
+// Username for 'https://github.com':
 
 exports.signup = (req,res) => {
     res.send('signup')
