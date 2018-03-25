@@ -1,23 +1,23 @@
 exports.showCreate = (req,res) => {
-    res.send('showCreate')
+    res.render('topic/create.html')
 }
 
 exports.create = (req,res) => {
-    res.send('create')
+    res.render('topic/new.html')
 }
 
 exports.showTopic = (req,res) => {
-    res.send('showTopic')
+    res.render('topic/edit.html')
 }
 
 exports.showEdit = (req,res) => {
-    res.send('showEdit')
+    res.render('settings/admin.html')
 }
 
 exports.edit = (req,res) => {
-    res.send('edit')
+    res.render('topic/edit.html')
 }
 
 exports.delete = (req,res) => {
-    res.send('delete')
+    res.render('settings/profile.html')
 }
