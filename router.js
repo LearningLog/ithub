@@ -19,7 +19,7 @@ router
     .post('/signin', use.signin)
     .get('/signup', use.showSignup)
     .post('/signup', use.signup)
-    .post('/signout', use.signout)
+    .get('/signout', use.signout)
     
 
 // topic.js

@@ -16,27 +16,52 @@
       </a>
       <h1>用户登录</h1>
     </div>
-    <form>
+    <form id="signin_form">
       <div class="form-group">
         <label for="exampleInputEmail1">邮箱</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" autofocus>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Email" autofocus>
       </div>
       <div class="form-group">
         <label for="exampleInputPassword1">密码</label>
         <a class="pull-right" href="">忘记密码？</a>
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
       </div>
       <div class="checkbox">
         <label>
           <input type="checkbox">记住我
         </label>
       </div>
-      <button type="button" class="btn btn-success btn-block">登录</button>
+      <button type="submit" class="btn btn-success btn-block">登录</button>
     </form>
     <div class="message">
-      <p>没有账号? <a href="/register">点击创建</a>.</p>
+      <p>没有账号?
+        <a href="/signup">点击创建</a>.</p>
     </div>
   </div>
+  <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+  <script>
+    $('#signin_form').on('submit', function (e) {
+      e.preventDefault()
+      const formData = $(this).serialize()
+      $.post('/signin', formData, function (result) {
+        console.log(result)
+        switch (result.code) {
+          case 200:
+            window.location.href = '/';
+            break;
+          case 1:
+            window.alert('邮箱不存在')
+            break;
+          case 2:
+            window.alert('密码错误')
+            break;
+          case 500:
+            window.alert('服务器内部错误，请稍后重试')
+            break;
+        }
+      })
+    })
+  </script>
 </body>
 
 </html>
