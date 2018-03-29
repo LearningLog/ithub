@@ -6,6 +6,8 @@ var bodyParser = require('body-parser')
 const session = require('express-session')
 // 加载持久化存储 session 模块
 const MySQLStore = require('express-mysql-session')(session);
+// 加载错误处理中间件模块
+const  errorhandler = require('errorhandler')
 // 加载 router 文件模块
 const router = require('./router')
 // *************************************************
@@ -27,14 +29,21 @@ var options = {
 
 var sessionStore = new MySQLStore(options);
 app.use(session({
-    key: 'session_cookie_name',// 加密规则私钥，用来保证不同的丰巢快递柜的密码规则都是不一样的，
+    key: 'session_cookie_name', // 加密规则私钥，用来保证不同的丰巢快递柜的密码规则都是不一样的，
     secret: 'keyboard cat',
     store: sessionStore,
     resave: false,
-    saveUninitialized: true,// 是否在初始化的时候就给客户端发送一个 Cookie
+    saveUninitialized: true, // 是否在初始化的时候就给客户端发送一个 Cookie
     store: sessionStore // 将 Session 数据存储到数据库中（默认是内存存储）
 }));
 // ***********************************************
+// 使用 app.locals 结合中间件挂载公共的模板数据
+app.use((req,res,next) => {
+    app.locals.sessionUser = req.session.user
+    // 不能忘记调用 next() ,否则请求进来就不往后走了
+    next()
+})
+//*********************************************
 // 配置 body-parser
 // 只要加入这个配置，则在 req 请求对象上会多出来一个属性：body
 // 也就是说你就可以直接通过 req.body 来获取表单 POST 请求体数据了
@@ -55,7 +64,21 @@ app.use('/node_modules', express.static('./node_modules'))
 app.engine('html', require('express-art-template'))
 // *************************************************
 app.use(router)
+//***************************************
+// 配置处理 404 页面
+app.use((req, res, next) => {
+    res.render('404.html')
+})
 // *************************************************
+// 配置全局错误中间件：错误处理中间件
+// app.use((err, res, next) => {
+//     res.send({
+//         code: 500,
+//         message: err.message
+//     })
+// })
+app.use(errorhandler())
+// **********************************
 // 绑定端口号，启动服务器，
 app.listen(3000, () => {
     console.log('running 3000...')

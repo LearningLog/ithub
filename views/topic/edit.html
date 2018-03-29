@@ -3,40 +3,53 @@
 
 <head>
   <meta charset="UTF-8">
+  <title>document</title>
   <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css">
 </head>
 
 <body>
   {{include '../_includes/header.html'}}
   <section class="container">
-  <div class="row">
-    <div class="col-md-5">
-      <form>
-        <div class="form-group">
-          <label for="exampleInputEmail1">选择板块</label>
-          <select class="form-control">
-            <option>分享</option>
-            <option>问答</option>
-            <option>招聘</option>
-            <option>客户端测试</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="exampleInputEmail1">标题</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">内容</label>
-          <textarea class="form-control" rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-      </form>
+    <div class="row">
+      <div class="col-md-5">
+        {{ if !topic }}
+        <p>该话题已不存在</p>
+        {{ else if topic.userId !== sessionUser.id }}
+        <p>你没有权限执行该操作</p>
+        {{ else }}
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">标题</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="title" value="{{ topic.title }}">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">内容</label>
+            <textarea name="content" class="form-control" id="content" cols="30" rows="10">{{ topic.content }}</textarea>
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        {{ /if }}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
   {{include '../_includes/footer.html'}}
   <script src="/node_modules/jquery/dist/jquery.js"></script>
   <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+  <script>
+    $('#form').on('submit', handleSubmit)
+
+    function handleSubmit(e) {
+      e.preventDefault()
+      var formData = $(this).serialize()
+      var url = $(this).attr('action') // /topic/xx/edit
+      $.post(url, formData, function (data) {
+        if (data.code === 200) {
+          // 修改成功，重新回到话题的详情页
+          window.location.href = '/topic/' + $('#topic_id').val()
+        }
+      })
+    }
+  </script>
 </body>
 
 </html>

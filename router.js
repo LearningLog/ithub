@@ -26,10 +26,10 @@ router
 router
     .get('/topic/create', topic.showCreate)
     .post('/topic/create', topic.create)
-    .get('/topic/:topicID', topic.showTopic)
-    .get('/topic/:topicID/edit', topic.showEdit)
-    .post('/topic/:topicID/edit', topic.edit)
-    .post('/topic/:topicID/delete', topic.delete)
+    .get('/topic/:topicId', topic.show)
+    .get('/topic/:topicId/edit', topic.showEdit)
+    .post('/topic/:topicId/edit', topic.edit)
+    .get('/topic/:topicId/delete', topic.delete)
 
 // 3. 导出 路由 router
 module.exports = router

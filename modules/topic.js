@@ -6,7 +6,7 @@ const db = require('../modules/db-handler')
  * @return {undefined} 没有返回值 
  */
 exports.findAll = callback => {
-    const sqlStr = ' selsect * from `topics` ';
+    const sqlStr = ' select * from `topics` order by `createdAt` desc';
     db.query(sqlStr, (err, results) => {
         if (err) {
             return callback(err)
@@ -48,14 +48,35 @@ exports.create = (topic, callback) => {
  * @param {Object} topic 话题对象
  * @param {Function} callback 回调函数
  */
-exports.editById = (topic, callback) => {
-    const sqlStr = ' update `topics` set `title`=?, `content`=? where `id`=? ';
-    db.query(sqlStr, topic, (err, results) => {
+exports.findById = (id, callback) => {
+    const sqlStr = 'SELECT * FROM `topics` WHERE `id`=?'
+    db.query(sqlStr, [id], (err, results) => {
         if (err) {
             return callback(err)
         }
-        callback(null, results)
+        callback(null, results[0])
     })
+}
+/**
+ * 
+ * @param {number} id 话题id
+ * @param {object} topic 要更新的话题对象
+ * @param {function} callback 回调函数
+ */
+exports.updateById = (id, topic, callback) => {
+    const sqlStr = ' update `topics` set `title`=?, `content`=? where `id`=? '
+    db.query(sqlStr, [
+            topic.title,
+            topic.content,
+            id
+        ],
+        (err, results) => {
+            if (err) {
+                return callback(err)
+            }
+            callback(null, results)
+        }
+    )
 }
 // 删除话题
 /**
